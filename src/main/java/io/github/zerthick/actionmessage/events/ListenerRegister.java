@@ -30,16 +30,28 @@ import java.util.Set;
 
 public class ListenerRegister {
 
+    private static Set<ListenerManager> listenerManagerSet;
+
     public static void registerListeners(ActionMessage plugin) {
 
-        Set<ListenerManager> listenerManagerSet = new HashSet<>();
+        listenerManagerSet = new HashSet<>();
         listenerManagerSet.add(new BlockListenerManager(plugin));
 
         EventManager eventManager = Sponge.getGame().getEventManager();
 
-        for(ListenerManager listenerManager : listenerManagerSet){
-            for(Object listener : listenerManager.getListeners()){
+        for(ListenerManager listenerManager : listenerManagerSet) {
+            for(Object listener : listenerManager.getListeners()) {
                 eventManager.registerListeners(plugin, listener);
+            }
+        }
+    }
+
+    public static void unregisterListeners() {
+        EventManager eventManager = Sponge.getGame().getEventManager();
+
+        for(ListenerManager listenerManager : listenerManagerSet) {
+            for(Object listener : listenerManager.getListeners()) {
+                eventManager.unregisterListeners(listener);
             }
         }
     }

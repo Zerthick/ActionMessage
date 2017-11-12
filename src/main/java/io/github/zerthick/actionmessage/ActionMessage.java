@@ -10,20 +10,15 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.config.DefaultConfig;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.filter.Getter;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -108,6 +103,40 @@ public class ActionMessage {
         getLogger().info(
                 getInstance().getName() + " version " + getInstance().getVersion().orElse("")
                         + " enabled!");
+    }
+
+    @Listener
+    public void onServerReload(GameReloadEvent event) {
+        ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(defaultConfig).build();
+
+        // Load New Messages
+        try {
+            CommentedConfigurationNode messagesNode = configLoader.load().getNode("messages");
+
+            // Load Block Messages
+            CommentedConfigurationNode blockMessagesNode = messagesNode.getNode("block");
+
+            Map<String, String> breakMessages = blockMessagesNode.getNode("break").getValue(new TypeToken<Map<String, String>>() {});
+            blockBreakMessages = breakMessages.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> TextSerializers.FORMATTING_CODE.deserialize(e.getValue())));
+
+            Map<String, String> placeMessages = blockMessagesNode.getNode("place").getValue(new TypeToken<Map<String, String>>() {});
+            blockPlaceMessages = placeMessages.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> TextSerializers.FORMATTING_CODE.deserialize(e.getValue())));
+
+            Map<String, String> interactPrimaryMessages = blockMessagesNode.getNode("interact", "primary").getValue(new TypeToken<Map<String, String>>() {});
+            blockInteractPrimaryMessages = interactPrimaryMessages.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> TextSerializers.FORMATTING_CODE.deserialize(e.getValue())));
+
+            Map<String, String> interactSecondaryMessages = blockMessagesNode.getNode("interact", "secondary").getValue(new TypeToken<Map<String, String>>() {});
+            blockInteractSecondaryMessages = interactSecondaryMessages.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> TextSerializers.FORMATTING_CODE.deserialize(e.getValue())));
+
+        } catch (ObjectMappingException | IOException e) {
+            logger.warn("Error loading config! Error: " + e.getMessage());
+        }
+
+        // Unregister Old Listeners
+        ListenerRegister.unregisterListeners();
+
+        // Register New Listeners
+        ListenerRegister.registerListeners(this);
     }
 
     public Map<String, Text> getBlockBreakMessages() {
