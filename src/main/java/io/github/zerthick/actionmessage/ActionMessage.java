@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
         id = "actionmessage",
         name = "ActionMessage",
         description = "A simple plugin to send messages to players on completing actions",
-        version = "1.0.0",
+        version = "1.1.0",
         authors = {
                 "Zerthick"
         }
