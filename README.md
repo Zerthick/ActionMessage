@@ -1,6 +1,6 @@
 # ActionMessage:
 ActionMessage is a simple message sending plugin. 
-When a player completes an action (such as breaking a block) they will recieve the corresponding message for that aciton.
+When a player completes an action (such as breaking a block) they will receive the corresponding message for that action.
 
 ## Defining Messages:
 All messages are defined in the `actionmessage.conf` file located in `~/config/actionmessage.conf`. 
@@ -37,8 +37,8 @@ messages {
 Messages are broken into different types (currently only block actions are supported). 
 For each type there are different actions associated with it. All messages are in the form `"<ID>"="<Message>"` where `<ID>`
 is either a block type ID such as `minecraft:stone` or a block state ID such as `minecraft:stone[variant=andersite]` and 
-`<Message>` is the text you want the player to recieve on performing the specified action.  Block state IDs take precident, so
-in the example above if a player were to break andesite he would **only** recieve the andesite specific message and not the 
+`<Message>` is the text you want the player to receive on performing the specified action.  Block state IDs take precident, so
+in the example above if a player were to break andesite he would **only** receive the andesite specific message and not the 
 generic stone one. Messages also support ampersand format codes. 
 
 ## Support Me
