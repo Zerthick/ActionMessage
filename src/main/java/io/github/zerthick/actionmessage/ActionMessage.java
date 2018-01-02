@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Zerthick
+ * Copyright (C) 2018  Zerthick
  *
  * This file is part of ActionMessage.
  *
@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
         id = "actionmessage",
         name = "ActionMessage",
         description = "A simple plugin to send messages to players on completing actions",
-        version = "1.1.0",
         authors = {
                 "Zerthick"
         }
